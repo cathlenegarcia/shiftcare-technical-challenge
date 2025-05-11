@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+
+# Add lib directory to the load path
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
+
+require "commands/search_clients_command"
+require "commands/find_duplicate_emails_command"
+
+def show_usage
+  puts "Usage:"
+  puts "  bin/cli search <query>    # Search clients by name"
+  puts "  bin/cli find_duplicates   # Find duplicate email addresses"
+  exit 1
+end
+
+command = ARGV[0]
+case command
+when "search"
+  if ARGV.length < 2
+    puts "Error: Search query is required"
+    show_usage
+  end
+  query = ARGV[1..].join(" ")
+  SearchClientsCommand.new(query).execute
+when "find_duplicates"
+  FindDuplicateEmailsCommand.new.execute
+else
+  show_usage
+end
